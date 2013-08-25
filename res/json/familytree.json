@@ -1,0 +1,18 @@
+[
+	{
+		"name" : "Rajkumar",
+		"age" : "23",
+		"sex" : "m"
+	},
+	{
+		"name" : "Kani",
+		"age" : "47",
+		"sex" : "m"
+	},
+	{
+		"name" : "MangalaSundary",
+		"age" : "45",
+		"sex" : "f",
+		"spouse" : "Kani"
+	}
+]
