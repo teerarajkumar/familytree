@@ -7,12 +7,12 @@
 	{
 		"name" : "Kani",
 		"age" : "47",
-		"sex" : "m"
+		"sex" : "m",
+		"spouse" : "MangalaSundary"
 	},
 	{
 		"name" : "MangalaSundary",
 		"age" : "45",
-		"sex" : "f",
-		"spouse" : "Kani"
+		"sex" : "f"
 	}
 ]
