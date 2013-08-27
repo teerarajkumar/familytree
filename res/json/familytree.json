@@ -8,11 +8,35 @@
 		"name" : "Kani",
 		"age" : "47",
 		"sex" : "m",
-		"spouse" : "MangalaSundary"
+		"spouse" : "MangalaSundary",
+		"siblings" : ["Selvi"]
 	},
 	{
 		"name" : "MangalaSundary",
 		"age" : "45",
 		"sex" : "f"
+	},
+	{
+		"name" : "Selvi",
+		"age" : "42",
+		"sex" : "f",
+		"spouse" : "Velmurugan"
+	},
+	{
+		"name" : "Velmurugan",
+		"age" : "45",
+		"sex" : "m"
+		"siblings" : ["MangalaSundary"]
+	},
+	{
+		"name" : "Manoj",
+		"age" : "14",
+		"sex" : "m",
+		"siblings" : ["Harish"]
+	},
+	{
+		"name" : "Harish",
+		"age" : "10",
+		"sex" : "m"
 	}
 ]

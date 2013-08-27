@@ -57,6 +57,42 @@ public class Family {
 		}
 	}
 	
+	private void matchSiblings(JSONArray jsa) {
+		for (Object o : jsa) {
+			JSONObject jso = (JSONObject) o;
+			String name = (String) jso.get("name");
+			Person currentPerson = findByName(name);
+			JSONArray siblingsArray = (JSONArray) jso.get("siblings");
+			if(siblingsArray == null)
+				continue;
+			for(Object s : siblingsArray){
+				String siblingName = (String)s;
+				Person sibling = findByName(siblingName);
+				if(sibling == null) {
+					System.err.println("Invalid sibling name "+siblingName);
+					return;
+				}
+				if(Person.notSiblings(currentPerson,sibling))
+					Person.connectAllSiblings(currentPerson,sibling);
+			}
+			connectWithinSiblings(siblingsArray);
+		}
+	}
+	
+	private void connectWithinSiblings(JSONArray siblingsArray) {
+		for(Object o1 : siblingsArray){
+			String name = (String)o1;
+			Person x = findByName(name);
+			for(Object o2 : siblingsArray){
+				name = (String)o2;
+				Person y = findByName(name);
+				if(x.equals(y))
+					continue;
+				if(Person.notSiblings(x, y))
+					Person.connectAllSiblings(x, y);
+			}
+		}
+	}
 	private Person createPersonFromJson(JSONObject jso) {
 		sexes sex;
 		String name = (String) jso.get("name");
@@ -79,6 +115,7 @@ public class Family {
 		Family f = new Family();
 		f.scanPersons(jsa);
 		f.matchSpouses(jsa);
+		f.matchSiblings(jsa);
 		f.print();
 	}
 }
