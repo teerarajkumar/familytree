@@ -35,6 +35,7 @@ public class Family {
 			if (p.hasName(name))
 				return p;
 		}
+		System.err.println("Unable to find person with name :"+name);
 		return null;
 	}
 
@@ -79,6 +80,26 @@ public class Family {
 		}
 	}
 	
+	private void matchParents(JSONArray jsa) {
+		for (Object o : jsa) {
+			JSONObject jso = (JSONObject) o;
+			String name = (String) jso.get("name");
+			Person currentPerson = findByName(name);
+			String dadName = (String) jso.get("dad");
+			String momName = (String) jso.get("mom");
+			if(dadName != null){
+				Person dad = findByName(dadName);
+				if(currentPerson.notLinkedWithParents())
+					Person.connectParentWithChild(dad,currentPerson);
+			}
+			else if(momName != null) {
+				Person mom = findByName(momName);
+				if(currentPerson.notLinkedWithParents())
+					Person.connectParentWithChild(mom,currentPerson);
+			}
+		}
+	}
+	
 	private void connectWithinSiblings(JSONArray siblingsArray) {
 		for(Object o1 : siblingsArray){
 			String name = (String)o1;
@@ -102,7 +123,7 @@ public class Family {
 			sex = Person.sexes.MALE;
 		else
 			sex = Person.sexes.FEMALE;
-		Person p = new Person(name, age, sex, null , null);
+		Person p = Person.newPerson(name, age, sex);
 		return p;
 	}
 	
@@ -116,6 +137,7 @@ public class Family {
 		f.scanPersons(jsa);
 		f.matchSpouses(jsa);
 		f.matchSiblings(jsa);
+		f.matchParents(jsa);
 		f.print();
 	}
 }

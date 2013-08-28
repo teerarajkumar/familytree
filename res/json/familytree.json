@@ -2,7 +2,8 @@
 	{
 		"name" : "Rajkumar",
 		"age" : "23",
-		"sex" : "m"
+		"sex" : "m",
+		"mom" : "MangalaSundary"
 	},
 	{
 		"name" : "Kani",
@@ -33,6 +34,7 @@
 		"age" : "14",
 		"sex" : "m",
 		"siblings" : ["Harish"]
+		"dad" : "Velmurugan"
 	},
 	{
 		"name" : "Harish",

@@ -9,6 +9,21 @@ import org.json.simple.JSONArray;
  * @author Rajkumar
  * 
  */
+
+class Parents{
+	Person dad;
+	Person mom;
+	public Parents(Person dad, Person mom){
+		this.dad = dad;
+		this.mom = mom;
+	}
+	
+	public void print(){
+		System.out.print("Parents: ");
+		System.out.println(dad.getName()+" , "+mom.getName());
+	}
+}
+
 public class Person {
 
 	private String name;
@@ -16,13 +31,19 @@ public class Person {
 	private sexes sex;
 	private Person spouse;
 	private ArrayList<Person> siblings;
+	private Parents parents;
+	private ArrayList<Person> children;
 
 	public enum sexes {
 		MALE, FEMALE;
 	}
 
-	public Person(String name, int age, sexes sex) {
-		new Person(name, age, sex, null, null);
+	public static Person newPerson(String name, int age, sexes sex) {
+		return new Person(name, age, sex, null, null, null, null);
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -34,12 +55,14 @@ public class Person {
 	 * @param siblings
 	 */
 	public Person(String name, int age, sexes sex, Person spouse,
-			ArrayList<Person> siblings) {
+			ArrayList<Person> siblings, Parents parents, ArrayList<Person> children) {
 		this.name = name;
 		this.age = age;
 		this.sex = sex;
 		this.spouse = spouse;
 		this.siblings = siblings;
+		this.parents = parents;
+		this.children = children; 
 	}
 
 	public void print() {
@@ -60,6 +83,8 @@ public class Person {
 			System.out.println();
 		} else
 			System.out.println("Single Child");
+		if(parents!=null)
+			parents.print();
 		System.out.println("****************************");
 	}
 
@@ -124,6 +149,29 @@ public class Person {
 			a.siblings.add(b);
 		if(!b.siblings.contains(a))
 			b.siblings.add(a);
+	}
+
+	private void simpleParentConnect(Person x){
+		if(parents == null){
+			if (x.sex == sexes.MALE)
+				parents = new Parents(x,x.spouse);
+			else
+				parents = new Parents(x.spouse,x);
+		}
+	}
+	
+	public static void connectParentWithChild(Person x, Person child) {
+		child.simpleParentConnect(x);
+		if(child.siblings != null)
+			for(Person sibling : child.siblings){
+				sibling.simpleParentConnect(x);
+			}
+	}
+
+	public boolean notLinkedWithParents() {
+		if(parents == null)
+			return true;
+		return false;
 	}
 
 }
