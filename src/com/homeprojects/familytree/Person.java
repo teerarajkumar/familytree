@@ -2,28 +2,11 @@ package com.homeprojects.familytree;
 
 import java.util.ArrayList;
 
-import org.json.simple.JSONArray;
-
 /**
  * 
  * @author Rajkumar
  * 
  */
-
-class Parents{
-	Person dad;
-	Person mom;
-	public Parents(Person dad, Person mom){
-		this.dad = dad;
-		this.mom = mom;
-	}
-	
-	public void print(){
-		System.out.print("Parents: ");
-		System.out.println(dad.getName()+" , "+mom.getName());
-	}
-}
-
 public class Person {
 
 	private String name;
@@ -32,7 +15,6 @@ public class Person {
 	private Person spouse;
 	private ArrayList<Person> siblings;
 	private Parents parents;
-	private ArrayList<Person> children;
 
 	public enum sexes {
 		MALE, FEMALE;
@@ -55,14 +37,14 @@ public class Person {
 	 * @param siblings
 	 */
 	public Person(String name, int age, sexes sex, Person spouse,
-			ArrayList<Person> siblings, Parents parents, ArrayList<Person> children) {
+			ArrayList<Person> siblings, Parents parents,
+			ArrayList<Person> children) {
 		this.name = name;
 		this.age = age;
 		this.sex = sex;
 		this.spouse = spouse;
 		this.siblings = siblings;
 		this.parents = parents;
-		this.children = children; 
 	}
 
 	public void print() {
@@ -76,25 +58,86 @@ public class Person {
 		if (siblings != null) {
 			System.out.print("Siblings :");
 			String delimiter = " ";
-			for(Person a : siblings){
-				System.out.print(delimiter+a.name);
+			for (Person a : siblings) {
+				System.out.print(delimiter + a.name);
 				delimiter = ", ";
 			}
 			System.out.println();
 		} else
 			System.out.println("Single Child");
-		if(parents!=null)
+		if (parents != null)
 			parents.print();
 		System.out.println("****************************");
 	}
 
-	public boolean hasName(String name) {
-		if (this.name.equals(name))
+	public void connectAllSiblings(Person b) {
+		Person a = this;
+		if (a.siblings == null)
+			a.siblings = new ArrayList<Person>();
+		if (b.siblings == null)
+			b.siblings = new ArrayList<Person>();
+
+		updateAllSiblingsInTheList(a, b);
+		updateAllSiblingsInTheList(b, a);
+
+		if (!a.siblings.contains(b))
+			a.siblings.add(b);
+		if (!b.siblings.contains(a))
+			b.siblings.add(a);
+	}
+
+	/**
+	 * Makes siblings of Person 'a' as siblings of Person 'b'
+	 * 
+	 * @param a
+	 * @param b
+	 */
+	private void updateAllSiblingsInTheList(Person a, Person b) {
+		for (Person x : a.siblings) {
+			if (!b.siblings.contains(x) && !b.equals(x)) {
+				b.siblings.add(x);
+				if (!x.siblings.contains(b))
+					x.siblings.add(b);
+			}
+		}
+	}
+
+	private void simpleParentConnect(Person x) {
+		if (parents == null) {
+			if (x.sex == sexes.MALE)
+				parents = new Parents(x, x.spouse);
+			else
+				parents = new Parents(x.spouse, x);
+		}
+	}
+
+	public boolean notLinkedWithParents() {
+		if (parents == null)
 			return true;
 		return false;
 	}
 
-	public static boolean notLinked(Person a, Person b) {
+	public Person getSpouse() {
+		return spouse;
+	}
+
+	/**
+	 * Creates spouse link between two persons
+	 * 
+	 * @param b
+	 *            person to which the caller will be married to
+	 */
+	public void marry(Person b) {
+		Person a = this;
+		if (a.spouse != null || b.spouse != null) {
+			System.err.println("Link thappache!");
+		}
+		a.spouse = b;
+		b.spouse = a;
+	}
+
+	public boolean notMarriedTo(Person b) {
+		Person a = this;
 		if (a.spouse == b && b.spouse == a)
 			return false;
 		if (a.spouse != null || b.spouse != null) {
@@ -103,75 +146,30 @@ public class Person {
 		return true;
 	}
 
-	public static void formLink(Person a, Person b) {
-		if (a.spouse != null || b.spouse != null) {
-			System.err.println("Link thappache!");
-		}
-		a.spouse = b;
-		b.spouse = a;
-	}
-
-	public static boolean notSiblings(Person a, Person b) {
-		if(a.siblings == null || b.siblings == null)
+	public boolean notSiblingOf(Person b) {
+		Person a = this;
+		if (a.siblings == null || b.siblings == null)
 			return true;
 		if (a.siblings.contains(b) && b.siblings.contains(a))
 			return false;
 		if (a.siblings.contains(b) || b.siblings.contains(a)) {
-			if(a.siblings.contains(b))
-				System.err.println(a.name+"(A) contains "+b.name+" but not vice versa");
+			if (a.siblings.contains(b))
+				System.err.println(a.name + "(A) contains " + b.name
+						+ " but not vice versa");
 			else
-				System.err.println(b.name+"(B) contains "+a.name+" but not vice versa");
+				System.err.println(b.name + "(B) contains " + a.name
+						+ " but not vice versa");
 			System.err.println("Annan thangachi akka thambi kulla kozhappam");
 		}
 		return true;
 	}
 
-	public static void connectAllSiblings(Person a, Person b) {
-		if(a.siblings == null)
-			a.siblings = new ArrayList<Person>();
-		if(b.siblings == null)
-			b.siblings = new ArrayList<Person>();
-		for (Person x : a.siblings) {
-			if (!b.siblings.contains(x) && !b.equals(x)){
-				b.siblings.add(x);
-				if(!x.siblings.contains(b))
-					x.siblings.add(b);
-			}
-		}
-		for (Person x : b.siblings) {
-			if(!a.siblings.contains(x) && !a.equals(x)){
-				a.siblings.add(x);
-				if(!x.siblings.contains(b))
-					x.siblings.add(b);
-			}
-		}
-		if(!a.siblings.contains(b))
-			a.siblings.add(b);
-		if(!b.siblings.contains(a))
-			b.siblings.add(a);
-	}
-
-	private void simpleParentConnect(Person x){
-		if(parents == null){
-			if (x.sex == sexes.MALE)
-				parents = new Parents(x,x.spouse);
-			else
-				parents = new Parents(x.spouse,x);
-		}
-	}
-	
-	public static void connectParentWithChild(Person x, Person child) {
-		child.simpleParentConnect(x);
-		if(child.siblings != null)
-			for(Person sibling : child.siblings){
+	public void connectWithParent(Person x) {
+		simpleParentConnect(x);
+		if (siblings != null)
+			for (Person sibling : siblings) {
 				sibling.simpleParentConnect(x);
 			}
-	}
-
-	public boolean notLinkedWithParents() {
-		if(parents == null)
-			return true;
-		return false;
 	}
 
 }

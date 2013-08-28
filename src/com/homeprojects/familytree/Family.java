@@ -32,7 +32,7 @@ public class Family {
 
 	public Person findByName(String name) {
 		for (Person p : family_members) {
-			if (p.hasName(name))
+			if ( p.getName().equals(name) )
 				return p;
 		}
 		System.err.println("Unable to find person with name :"+name);
@@ -52,20 +52,20 @@ public class Family {
 					System.err.println("Invalid spouse name "+spouseName);
 					return;
 				}
-				if(Person.notLinked(currentPerson,spouse))
-					Person.formLink(currentPerson,spouse);
+				if(currentPerson.notMarriedTo(spouse))
+					currentPerson.marry(spouse);
 			}
 		}
 	}
-	
+
 	private void matchSiblings(JSONArray jsa) {
 		for (Object o : jsa) {
 			JSONObject jso = (JSONObject) o;
-			String name = (String) jso.get("name");
-			Person currentPerson = findByName(name);
 			JSONArray siblingsArray = (JSONArray) jso.get("siblings");
 			if(siblingsArray == null)
 				continue;
+			String name = (String) jso.get("name");
+			Person currentPerson = findByName(name);
 			for(Object s : siblingsArray){
 				String siblingName = (String)s;
 				Person sibling = findByName(siblingName);
@@ -73,8 +73,8 @@ public class Family {
 					System.err.println("Invalid sibling name "+siblingName);
 					return;
 				}
-				if(Person.notSiblings(currentPerson,sibling))
-					Person.connectAllSiblings(currentPerson,sibling);
+				if(currentPerson.notSiblingOf(sibling))
+					currentPerson.connectAllSiblings(sibling);
 			}
 			connectWithinSiblings(siblingsArray);
 		}
@@ -90,12 +90,12 @@ public class Family {
 			if(dadName != null){
 				Person dad = findByName(dadName);
 				if(currentPerson.notLinkedWithParents())
-					Person.connectParentWithChild(dad,currentPerson);
+					currentPerson.connectWithParent(dad);
 			}
 			else if(momName != null) {
 				Person mom = findByName(momName);
 				if(currentPerson.notLinkedWithParents())
-					Person.connectParentWithChild(mom,currentPerson);
+					currentPerson.connectWithParent(mom);
 			}
 		}
 	}
@@ -103,14 +103,14 @@ public class Family {
 	private void connectWithinSiblings(JSONArray siblingsArray) {
 		for(Object o1 : siblingsArray){
 			String name = (String)o1;
-			Person x = findByName(name);
+			Person a = findByName(name);
 			for(Object o2 : siblingsArray){
 				name = (String)o2;
-				Person y = findByName(name);
-				if(x.equals(y))
+				Person b = findByName(name);
+				if(a.equals(b))
 					continue;
-				if(Person.notSiblings(x, y))
-					Person.connectAllSiblings(x, y);
+				if(a.notSiblingOf(b))
+					a.connectAllSiblings(b);
 			}
 		}
 	}
