@@ -26,14 +26,14 @@
 	{
 		"name" : "Velmurugan",
 		"age" : "45",
-		"sex" : "m"
+		"sex" : "m",
 		"siblings" : ["MangalaSundary"]
 	},
 	{
 		"name" : "Manoj",
 		"age" : "14",
 		"sex" : "m",
-		"siblings" : ["Harish"]
+		"siblings" : ["Harish"],
 		"dad" : "Velmurugan"
 	},
 	{
